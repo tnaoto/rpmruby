@@ -7,7 +7,10 @@ RUN yum install -y rpmdevtools git tar unzip readline readline-devel ncurses ncu
 RUN mkdir -p /rpmbuild
 ADD ./ /rpmbuild/
 WORKDIR /rpmbuild
+ENV HOME /
 
-RUN wget -P /rpmbuild/SOURCES/ http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz
+RUN wget -P /rpmbuild/SOURCES/ http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
 RUN chown root:root -R /rpmbuild
-CMD /usr/bin/rpmbuild -bb /rpmbuild/SPECS/ruby.spec
+
+ENTRYPOINT ["/usr/bin/rpmbuild"]
+CMD ["-bb","/rpmbuild/SPECS/ruby.spec"]

@@ -1,4 +1,5 @@
-%define rubyver         2.1.2
+%define rubyver         2.1.5
+%define         prefix  /usr/local
 
 Name:           ruby
 Version:        %{rubyver}
@@ -36,18 +37,20 @@ straight-forward, and extensible.
 rm -rf $RPM_BUILD_ROOT
 CFLAGS="$RPM_OPT_FLAGS \
        -Wall -fno-strict-aliasing"
-./configure --prefix=%{prefix}
-make
-
-#%configure --prefix=/usr/local \
-#  --includedir=%{_includedir}/ruby \
-#  --libdir=%{_libdir}
-
+./configure --prefix=/usr/local \
+  --exec-prefix=/usr/local \
+  --includedir=%{_includedir}/ruby \
+  --libdir=%{_libdir} \
+  --enable-shared \
+  --disable-rpath \
+  --disable-install-doc \
+  --without-X11 \
+  $*
 make %{?_smp_mflags}
 
 %install
 # installing binaries ...
-make install DESTDIR=$RPM_BUILD_ROOT
+make -e prefix=$RPM_BUILD_ROOT%{prefix} install
 
 #we don't want to keep the src directory
 rm -rf $RPM_BUILD_ROOT/usr/src
@@ -57,7 +60,3 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%{_bindir}
-%{_includedir}
-%{_datadir}
-%{_libdir}
